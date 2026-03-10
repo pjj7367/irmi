@@ -1,0 +1,78 @@
+"use client";
+
+import { useState } from "react";
+import { Search } from "lucide-react";
+import NewsCard from "@/components/analysis/NewsCard";
+import KeywordCloud from "@/components/analysis/KeywordCloud";
+import { mockNewsArticles } from "@/lib/mock-data";
+import { Category } from "@/lib/types";
+
+const categories: (Category | "전체")[] = ["전체", "물가", "고용", "자영업", "금융", "부동산"];
+
+export default function AnalysisPage() {
+  const [category, setCategory] = useState<Category | "전체">("전체");
+  const [query, setQuery] = useState("");
+
+  const filtered = mockNewsArticles.filter((a) => {
+    if (category !== "전체" && a.category !== category) return false;
+    if (query && !a.title.includes(query) && !a.summary.includes(query))
+      return false;
+    return true;
+  });
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h1 className="text-lg font-bold text-foreground">뉴스 분석</h1>
+        <p className="mt-1 text-sm text-text-muted">
+          실시간 뉴스 분석 결과와 주요 키워드를 확인합니다.
+        </p>
+      </div>
+
+      <KeywordCloud />
+
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap gap-1.5">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                category === cat
+                  ? "bg-accent-blue text-white"
+                  : "bg-surface-bright text-text-secondary hover:bg-surface-hover"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+        <div className="relative flex-1 min-w-[200px]">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+          />
+          <input
+            type="text"
+            placeholder="기사 검색..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm text-foreground outline-none transition focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {filtered.length === 0 ? (
+          <div className="rounded-2xl border border-border bg-surface py-12 text-center text-sm text-text-muted">
+            검색 결과가 없습니다.
+          </div>
+        ) : (
+          filtered.map((article) => (
+            <NewsCard key={article.id} article={article} />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 750" class="w-full h-auto">
+  <g id="korea-map" stroke="#ffffff" stroke-width="1" fill="#e2e8f0">
+    <path id="Seoul" d="M174,171 L178,165 L187,166 L192,175 L185,185 L175,182 Z" />
+    <path id="Gyeonggi" d="M147,125 L175,108 L206,120 L220,160 L205,215 L160,225 L135,185 Z" />
+    <path id="Gangwon" d="M206,120 L320,110 L350,200 L280,260 L220,160 Z" />
+    <path id="Chungbuk" d="M220,160 L280,260 L260,320 L200,300 L185,240 Z" />
+    <path id="Chungnam" d="M135,185 L185,240 L160,350 L100,320 L110,220 Z" />
+    <path id="Jeonbuk" d="M100,320 L160,350 L200,420 L130,460 L90,400 Z" />
+    <path id="Jeonnam" d="M90,400 L130,460 L180,550 L80,580 L50,480 Z" />
+    <path id="Gyeongbuk" d="M280,260 L350,200 L410,380 L310,430 L260,320 Z" />
+    <path id="Gyeongnam" d="M200,420 L310,430 L330,520 L220,550 L180,450 Z" />
+    <path id="Jeju" d="M100,650 A40,25 0 1,0 180,650 A40,25 0 1,0 100,650" />
+    <circle id="Incheon" cx="140" cy="170" r="5" fill="#cbd5e1" />
+    <circle id="Daejeon" cx="180" cy="320" r="5" fill="#cbd5e1" />
+    <circle id="Daegu" cx="300" cy="400" r="5" fill="#cbd5e1" />
+    <circle id="Ulsan" cx="360" cy="450" r="5" fill="#cbd5e1" />
+    <circle id="Busan" cx="320" cy="510" r="5" fill="#cbd5e1" />
+    <circle id="Gwangju" cx="120" cy="480" r="5" fill="#cbd5e1" />
+    <circle id="Sejong" cx="165" cy="285" r="4" fill="#cbd5e1" />
+  </g>
+</svg>
+
+방금 준 SVG 코드를 내 리액트 대시보드 컴포넌트에 넣어줘. 그리고 아래 로직을 추가해줘:
+
+데이터 매핑: Seoul, Gyeonggi 등 각 path의 id와 내가 가진 지역별 위험 점수를 연결해줘.
+
+색상 변경: 점수가 80 이상이면 빨간색(#ef4444), 50~80 사이면 주황색(#f97316), 50 미만이면 초록색(#22c55e)으로 fill 속성이 변하게 해줘.
+
+애니메이션: 지도가 나타날 때 스르륵 나타나는 페이드인 효과를 주고, 마우스를 올린 지역은 약간 밝아지게(opacity 조절) 만들어줘.
