@@ -1,4 +1,4 @@
-import { RiskScore, Signal, NewsArticle, RegionRisk, Category } from "./types";
+import { RiskScore, Signal, NewsArticle, RegionRisk, Category, RiskLevel } from "./types";
 
 export const mockRiskScore: RiskScore = {
   overall: 72,
@@ -190,4 +190,55 @@ export const mockTrendData = [
   { date: "2월 3주", 물가: 72, 고용: 61, 자영업: 78, 금융: 65, 부동산: 68 },
   { date: "2월 4주", 물가: 74, 고용: 62, 자영업: 79, 금융: 66, 부동산: 69 },
   { date: "3월 1주", 물가: 78, 고용: 65, 자영업: 82, 금융: 68, 부동산: 71 },
+];
+
+export const mockLeadingIndicatorData = [
+  { date: "1월 1주", 통계청지표: 58, 이르미지표: 62, 격차: 4 },
+  { date: "1월 2주", 통계청지표: 59, 이르미지표: 64, 격차: 5 },
+  { date: "1월 3주", 통계청지표: 60, 이르미지표: 66, 격차: 6 },
+  { date: "1월 4주", 통계청지표: 62, 이르미지표: 65, 격차: 3 },
+  { date: "2월 1주", 통계청지표: 64, 이르미지표: 68, 격차: 4 },
+  { date: "2월 2주", 통계청지표: 65, 이르미지표: 71, 격차: 6 },
+  { date: "2월 3주", 통계청지표: 66, 이르미지표: 73, 격차: 7 },
+  { date: "2월 4주", 통계청지표: 68, 이르미지표: 76, 격차: 8 },
+  { date: "3월 1주", 통계청지표: 70, 이르미지표: 78, 격차: 8 },
+];
+
+export interface Insight {
+  id: string;
+  title: string;
+  summary: string;
+  level: RiskLevel;
+  category: Category;
+}
+
+export const mockInsights: Insight[] = [
+  {
+    id: "i1",
+    title: "자영업 폐업 위기 심화",
+    summary: "소상공인 폐업률이 3개월 연속 상승하며 역대 최고 수준에 근접. 음식업·소매업 중심으로 위험 확산.",
+    level: "critical",
+    category: "자영업",
+  },
+  {
+    id: "i2",
+    title: "소비자물가 3.8% 급등",
+    summary: "농산물·가공식품 가격 인상이 체감 물가를 끌어올리며, 6개월 만에 최고치를 기록.",
+    level: "critical",
+    category: "물가",
+  },
+  {
+    id: "i3",
+    title: "부동산 PF 부실 확대 우려",
+    summary: "건설사 PF 대출 부실이 2분기 본격 현실화 가능성. 연쇄 부실에 대한 경고 증가.",
+    level: "warning",
+    category: "부동산",
+  },
+  {
+    id: "i4",
+    title: "청년 고용 지표 악화",
+    summary: "IT·스타트업 분야 채용 축소가 두드러지며 청년 취업자 수 2개월 연속 감소.",
+    level: "warning",
+    category: "고용",
+  },
 ];

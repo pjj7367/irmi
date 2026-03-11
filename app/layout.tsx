@@ -27,12 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <link
+          rel="stylesheet"
+          as="style"
+          crossOrigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         <Header />
         <TabNav />
-        <main className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6">
+        <main className="mx-auto max-w-[1600px] px-6 py-6">
           {children}
         </main>
       </body>

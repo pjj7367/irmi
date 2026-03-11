@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docs & screenshots
+/docs
+/playwright_captured
+
+# playwright MCP logs
+.playwright-mcp/
+reporters-balanced.png
+reporters-compact.png
+reporters-full-page.png
+reporters-hero-check.png
+reporters-refined.png

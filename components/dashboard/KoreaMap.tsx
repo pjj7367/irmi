@@ -27,15 +27,15 @@ const CITIES: { name: string; d: string; lx: number; ly: number }[] = [
 ];
 
 function getRegionFill(score: number): string {
-  if (score >= 75) return "rgba(239,68,68,0.55)";
-  if (score >= 60) return "rgba(245,158,11,0.5)";
-  if (score >= 45) return "rgba(56,189,248,0.4)";
-  return "rgba(34,197,94,0.4)";
+  if (score >= 75) return "rgba(239,68,68,0.6)";
+  if (score >= 60) return "rgba(245,158,11,0.55)";
+  if (score >= 45) return "rgba(56,189,248,0.35)";
+  return "rgba(34,197,94,0.35)";
 }
 
 function getRegionStroke(score: number): string {
-  if (score >= 75) return "rgba(239,68,68,0.7)";
-  if (score >= 60) return "rgba(245,158,11,0.6)";
+  if (score >= 75) return "rgba(239,68,68,0.8)";
+  if (score >= 60) return "rgba(245,158,11,0.7)";
   if (score >= 45) return "rgba(56,189,248,0.5)";
   return "rgba(34,197,94,0.5)";
 }
@@ -100,7 +100,7 @@ export default function KoreaMap() {
   };
 
   return (
-    <div className="panel p-5 h-full" ref={containerRef}>
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 h-full shadow-sm" ref={containerRef}>
       <h2 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
         <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent-cyan" />
         전국 지역별 위기 현황
@@ -128,8 +128,8 @@ export default function KoreaMap() {
           {/* Ulleungdo & Dokdo (경북 연동) */}
           <rect x="358" y="248" width="8" height="7" rx="1.5" strokeWidth="1" strokeLinejoin="round" {...regionStyle("경북")} />
           <rect x="374" y="252" width="3.5" height="3" rx="0.8" strokeWidth="0.8" strokeLinejoin="round" {...regionStyle("경북")} />
-          <text x="362" y="243" textAnchor="middle" dominantBaseline="central" fill="#d4dde8" fontSize="5.5" fontWeight="600" stroke="#0f1d2e" strokeWidth="1.5" paintOrder="stroke" className="pointer-events-none select-none">울릉도</text>
-          <text x="376" y="248" textAnchor="middle" dominantBaseline="central" fill="#d4dde8" fontSize="4.5" fontWeight="600" stroke="#0f1d2e" strokeWidth="1.2" paintOrder="stroke" className="pointer-events-none select-none">독도</text>
+          <text x="362" y="243" textAnchor="middle" dominantBaseline="central" fill="#374151" fontSize="5.5" fontWeight="600" stroke="#FFFFFF" strokeWidth="1.5" paintOrder="stroke" className="pointer-events-none select-none">울릉도</text>
+          <text x="376" y="248" textAnchor="middle" dominantBaseline="central" fill="#374151" fontSize="4.5" fontWeight="600" stroke="#FFFFFF" strokeWidth="1.2" paintOrder="stroke" className="pointer-events-none select-none">독도</text>
 
           {[...PROVINCES, ...CITIES].map((item) => {
             const data = regionScoreMap.get(item.name);
@@ -141,10 +141,10 @@ export default function KoreaMap() {
                   y={item.ly - 6}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fill="#d4dde8"
+                  fill="#374151"
                   fontSize="7.5"
                   fontWeight="600"
-                  stroke="#0f1d2e"
+                  stroke="#FFFFFF"
                   strokeWidth="2"
                   paintOrder="stroke"
                 >
@@ -158,7 +158,7 @@ export default function KoreaMap() {
                   fill={getScoreColor(score)}
                   fontSize="7.5"
                   fontWeight="800"
-                  stroke="#0f1d2e"
+                  stroke="#FFFFFF"
                   strokeWidth="1.5"
                   paintOrder="stroke"
                 >

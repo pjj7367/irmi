@@ -19,6 +19,11 @@ export interface Signal {
   relatedArticles: number;
   date: string;
   keywords: string[];
+  subcategory?: string;
+  surgeRatio?: number;
+  velocity?: number;
+  weeklyTrend?: number[];
+  topArticles?: { id: string; title: string; publishedAt: string; url: string }[];
 }
 
 export interface NewsArticle {
@@ -31,6 +36,7 @@ export interface NewsArticle {
   riskLevel: RiskLevel;
   publishedAt: string;
   url: string;
+  writer?: string | null;
 }
 
 export interface RegionRisk {

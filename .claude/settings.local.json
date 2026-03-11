@@ -11,7 +11,16 @@
       "Bash(node:*)",
       "Bash(curl:*)",
       "mcp__playwright__browser_evaluate",
-      "Bash(pdftotext:*)"
+      "Bash(pdftotext:*)",
+      "Bash(sqlite3:*)",
+      "Bash(npm list:*)",
+      "Bash(ls:*)",
+      "Bash(where sqlite3:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(npm install:*)",
+      "Bash(npx tsx:*)",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_snapshot"
     ]
   },
   "enabledMcpjsonServers": [

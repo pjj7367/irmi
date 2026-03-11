@@ -9,22 +9,22 @@ function getBadgeStyle(level: RiskLevel) {
   switch (level) {
     case "critical":
       return {
-        className: "bg-risk-critical-bg text-red-400 border-risk-critical-border",
+        className: "bg-red-50 text-red-600 border-red-100",
         Icon: Flame,
       };
     case "warning":
       return {
-        className: "bg-risk-warning-bg text-orange-400 border-risk-warning-border",
+        className: "bg-orange-50 text-orange-600 border-orange-100",
         Icon: AlertTriangle,
       };
     case "watch":
       return {
-        className: "bg-risk-watch-bg text-sky-400 border-risk-watch-border",
+        className: "bg-sky-50 text-sky-600 border-sky-100",
         Icon: Eye,
       };
     case "safe":
       return {
-        className: "bg-risk-safe-bg text-emerald-400 border-risk-safe-border",
+        className: "bg-emerald-50 text-emerald-600 border-emerald-100",
         Icon: Eye,
       };
   }
@@ -33,13 +33,13 @@ function getBadgeStyle(level: RiskLevel) {
 function getCardAccent(level: RiskLevel) {
   switch (level) {
     case "critical":
-      return "border-l-red-500 hover:bg-risk-critical-bg/50";
+      return "border-l-red-400 hover:bg-red-50/30";
     case "warning":
-      return "border-l-orange-500 hover:bg-risk-warning-bg/50";
+      return "border-l-orange-400 hover:bg-orange-50/30";
     case "watch":
-      return "border-l-sky-400 hover:bg-risk-watch-bg/50";
+      return "border-l-sky-400 hover:bg-sky-50/30";
     case "safe":
-      return "border-l-emerald-500 hover:bg-risk-safe-bg/50";
+      return "border-l-emerald-400 hover:bg-emerald-50/30";
   }
 }
 
@@ -55,9 +55,9 @@ export default function CrisisReports() {
   const topArticles = mockNewsArticles.slice(0, 3);
 
   return (
-    <div className="panel p-5 h-full flex flex-col">
-      <h2 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500 pulse-critical" />
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 h-full flex flex-col shadow-sm">
+      <h2 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <span className="inline-block h-2 w-2 rounded-full bg-red-500 pulse-critical" />
         최신 위기 리포트
       </h2>
 
@@ -68,16 +68,16 @@ export default function CrisisReports() {
           return (
             <div
               key={article.id}
-              className={`rounded-xl border border-border border-l-[3px] ${getCardAccent(article.riskLevel)} bg-surface-bright/40 p-4 transition-all duration-200`}
+              className={`rounded-xl border border-gray-100 border-l-[3px] ${getCardAccent(article.riskLevel)} bg-white p-4 transition-all duration-200 hover:shadow-md`}
             >
               <div className="flex items-start justify-between gap-3 mb-2.5">
                 <span
-                  className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold tracking-wide ${badge.className}`}
+                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${badge.className}`}
                 >
-                  <BadgeIcon size={11} />
+                  <BadgeIcon size={10} />
                   {getRiskLabel(article.riskLevel)}
                 </span>
-                <div className="flex items-center gap-1.5 text-text-muted shrink-0">
+                <div className="flex items-center gap-1.5 text-gray-400 shrink-0">
                   <Clock size={11} />
                   <span className="text-[11px]">
                     {timeAgo(article.publishedAt)}
@@ -85,11 +85,11 @@ export default function CrisisReports() {
                 </div>
               </div>
 
-              <h3 className="text-[15px] font-bold text-foreground leading-snug mb-2">
+              <h3 className="text-[15px] font-bold text-gray-900 leading-snug mb-1.5">
                 {article.title}
               </h3>
 
-              <p className="text-xs text-text-muted leading-relaxed mb-3 line-clamp-2">
+              <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">
                 {article.summary}
               </p>
 
@@ -98,7 +98,7 @@ export default function CrisisReports() {
                   {article.keywords.slice(0, 3).map((kw) => (
                     <span
                       key={kw}
-                      className="rounded-md bg-accent-blue/10 px-2 py-0.5 text-[10px] text-blue-400 border border-accent-blue/20"
+                      className="rounded-full bg-gray-50 px-2 py-0.5 text-[10px] text-gray-500 border border-gray-100"
                     >
                       #{kw}
                     </span>
@@ -106,7 +106,7 @@ export default function CrisisReports() {
                 </div>
                 <a
                   href={article.url}
-                  className="flex items-center gap-1 text-[11px] text-accent-blue font-medium hover:text-accent-blue transition"
+                  className="flex items-center gap-1 text-[11px] text-blue-500 font-medium hover:text-blue-600 transition"
                 >
                   상세보기 <ExternalLink size={10} />
                 </a>

@@ -30,10 +30,10 @@ export default function SignalFilter({
           <button
             key={cat}
             onClick={() => onCategoryChange(cat)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
               selectedCategory === cat
-                ? "bg-accent-blue text-white"
-                : "bg-surface-bright text-text-secondary hover:bg-surface-hover"
+                ? "bg-gray-900 text-white shadow-sm"
+                : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 hover:text-gray-700"
             }`}
           >
             {cat}
@@ -45,10 +45,10 @@ export default function SignalFilter({
           <button
             key={lev.value}
             onClick={() => onLevelChange(lev.value)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
               selectedLevel === lev.value
-                ? "bg-accent-blue text-white"
-                : "bg-surface-bright text-text-secondary hover:bg-surface-hover"
+                ? "bg-gray-900 text-white shadow-sm"
+                : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 hover:text-gray-700"
             }`}
           >
             {lev.label}

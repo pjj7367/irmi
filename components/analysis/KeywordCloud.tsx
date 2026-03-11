@@ -1,10 +1,14 @@
 "use client";
 
-import { mockNewsArticles } from "@/lib/mock-data";
+import { NewsArticle } from "@/lib/types";
 
-export default function KeywordCloud() {
+interface KeywordCloudProps {
+  articles: NewsArticle[];
+}
+
+export default function KeywordCloud({ articles }: KeywordCloudProps) {
   const keywordCount: Record<string, number> = {};
-  mockNewsArticles.forEach((a) =>
+  articles.forEach((a) =>
     a.keywords.forEach((kw) => {
       keywordCount[kw] = (keywordCount[kw] || 0) + 1;
     })
@@ -13,8 +17,10 @@ export default function KeywordCloud() {
   const sorted = Object.entries(keywordCount).sort((a, b) => b[1] - a[1]);
   const max = sorted[0]?.[1] || 1;
 
+  if (sorted.length === 0) return null;
+
   return (
-    <div className="rounded-2xl border border-border bg-surface p-6">
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-sm font-semibold text-text-muted">
         주요 키워드
       </h2>

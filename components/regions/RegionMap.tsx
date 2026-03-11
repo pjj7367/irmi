@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, type MouseEvent } from "react";
+import { useState, useRef, useCallback, type MouseEvent } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { RegionRisk } from "@/lib/types";
 import { getScoreLevel, getRiskLabel } from "@/lib/utils";
 
 const PROVINCES: { name: string; d: string; lx: number; ly: number }[] = [
-  { name: "경기", d: "M163.1,256.2 L155.7,236.4 L165.6,240.8 L169.2,237.1 L154.9,234.1 L157.2,243.4 L155.2,240.3 L151.4,243.8 L149.5,236.1 L166.2,227.8 L164.6,214.9 L173.4,224.5 L179.9,221.8 L183.2,225 L191.2,212.8 L186.5,214.8 L185.9,204.1 L181.5,203.2 L170.2,213.5 L157.5,208.2 L151.2,211.2 L148.5,197.1 L157.9,196.8 L158.4,182.9 L167.9,179.1 L178.5,161.2 L186.4,156.9 L193.8,168.2 L198.1,164.7 L200.5,171.8 L207.6,170.1 L209.3,178 L218.7,182.9 L218.8,189.4 L213.7,192.7 L214.5,208 L234.6,215.3 L228.9,219 L231.7,224.9 L224.7,248 L220.4,246.8 L218.8,253.7 L210,254.9 L198.4,267.7 L189.3,261.5 L173.9,267.1 L163.1,256.2 Z", lx: 202, ly: 180 },
+  { name: "경기", d: "M163.1,256.2 L155.7,236.4 L165.6,240.8 L169.2,237.1 L154.9,234.1 L157.2,243.4 L155.2,240.3 L151.4,243.8 L149.5,236.1 L166.2,227.8 L164.6,214.9 L173.4,224.5 L179.9,221.8 L183.2,225 L191.2,212.8 L186.5,214.8 L185.9,204.1 L181.5,203.2 L170.2,213.5 L157.5,208.2 L151.2,211.2 L148.5,197.1 L157.9,196.8 L158.4,182.9 L167.9,179.1 L178.5,161.2 L186.4,156.9 L193.8,168.2 L198.1,164.7 L200.5,171.8 L207.6,170.1 L209.3,178 L218.7,182.9 L218.8,189.4 L213.7,192.7 L214.5,208 L234.6,215.3 L228.9,219 L231.7,224.9 L224.7,248 L220.4,246.8 L218.8,253.7 L210,254.9 L198.4,267.7 L189.3,261.5 L173.9,267.1 L163.1,256.2 Z", lx: 198, ly: 192 },
   { name: "강원", d: "M291.4,177.4 L332.2,240.4 L332.7,247.5 L324.6,256.1 L315.3,251.2 L300.9,255.7 L294.9,251.8 L293,257 L269.3,246.6 L263.6,248.5 L265.8,241.9 L257.9,239.3 L246.8,244.1 L242.6,238.7 L239.6,246.1 L230.4,247.5 L228.9,219 L234.6,215.1 L214.5,208 L213.7,192.7 L218.8,189.4 L218.7,182.9 L209.3,178 L207.6,170.1 L200.5,171.8 L198.1,164.7 L193.8,168.2 L185.9,156.7 L230.4,151.5 L244.6,157.3 L262.8,144.5 L267.6,130.3 L291.4,177.4 Z", lx: 252.2, ly: 208.1 },
   { name: "충북", d: "M199.8,281.2 L206.9,278.2 L198.8,264.7 L210,254.9 L218.8,253.7 L227.9,242 L230.7,247.7 L238,247.2 L242.6,238.7 L246.8,244.1 L257.9,239.3 L265.8,241.9 L263.6,248.5 L269.3,246.6 L271.9,251 L286.6,254 L273,265 L271.6,274.3 L260.1,269.4 L258.4,274.2 L248.3,273.8 L249,282.5 L241.7,280.2 L236.3,284.5 L239.6,290.9 L236.4,286.6 L231.3,291.1 L238.4,298.5 L234.8,317.1 L246.1,317.7 L248.2,323 L243,323.2 L241.9,333.4 L236.5,337.3 L222.4,336 L218.4,321.7 L211.6,320.1 L215.9,307.1 L211,301 L205.7,302.6 L205.9,296.1 L199.1,292.3 L199.8,281.2 Z", lx: 236.3, ly: 281.7 },
   { name: "충남", d: "M160,259.2 L170.8,268.8 L190,261.6 L205.7,275.3 L206.9,278.6 L198.2,283.9 L188,282.4 L193.2,292.9 L190.9,299.4 L198,305.9 L195.7,315.8 L201.2,324.4 L203.8,317.3 L208.2,323.5 L214.2,319 L218.4,321.7 L219.5,339 L205.7,338.4 L201.6,328.6 L187.6,334 L177.3,326.6 L170.9,334.3 L158.1,338.7 L156.7,331.6 L147,328.4 L150.5,318 L147.6,312.7 L151.2,310.9 L146,308.3 L149.4,303.8 L145.1,292.6 L138.7,289 L133.9,292.4 L133.1,280.8 L125.1,284.9 L129.4,281.4 L125.1,278.6 L122.8,282.6 L122.2,277.3 L128.1,266.8 L133.9,267.1 L134.6,260.9 L133.6,275.2 L136.4,270.1 L138.6,272.8 L143,267.1 L136.5,262.3 L140.1,261.6 L138.2,258.2 L144.4,259.3 L147.3,254 L160,259.2 Z", lx: 163.5, ly: 293.8 },
@@ -18,35 +18,40 @@ const PROVINCES: { name: string; d: string; lx: number; ly: number }[] = [
 ];
 
 const CITIES: { name: string; d: string; lx: number; ly: number }[] = [
-  { name: "서울", d: "M181.1,203.3 L185.9,204.1 L186.5,214.8 L191.2,212.8 L191.6,215.7 L189.1,217.5 L189.2,221.1 L184,224.9 L179.9,221.8 L173.4,224.5 L171.3,219.7 L167.7,221.3 L168.2,216 L164.5,214.8 L166.9,210.9 L170.2,213.5 L173.2,212.1 L173.5,207.4 L178.7,208.4 L181.1,203.3 Z", lx: 178, ly: 200 },
+  { name: "서울", d: "M181.1,203.3 L185.9,204.1 L186.5,214.8 L191.2,212.8 L191.6,215.7 L189.1,217.5 L189.2,221.1 L184,224.9 L179.9,221.8 L173.4,224.5 L171.3,219.7 L167.7,221.3 L168.2,216 L164.5,214.8 L166.9,210.9 L170.2,213.5 L173.2,212.1 L173.5,207.4 L178.7,208.4 L181.1,203.3 Z", lx: 177, ly: 215 },
   { name: "부산", d: "M306.5,414.9 L306.3,410.4 L304.8,413 L305,410.1 L302.4,412.6 L302.5,409.3 L301.7,412.6 L298.7,412.4 L295.8,406.4 L301.1,406.9 L301.3,402.1 L308.5,400.4 L310.2,396.9 L316.2,394.6 L316.8,389.5 L320.6,390.9 L322,387.9 L326.3,388 L328.9,393.1 L326.1,393.7 L323.7,404.1 L316.8,406.7 L317.2,411 L312.5,408.9 L310.2,414.7 L309.3,412 L309.6,415 L306.5,414.9 Z", lx: 324, ly: 408 },
   { name: "대구", d: "M289.5,337.8 L292.7,341.1 L293.7,349.1 L288.6,355.8 L288.7,361.3 L284.5,362.8 L284.1,359.9 L280.9,360.1 L277.2,367.9 L268.5,370.3 L270.3,367.3 L267.2,362.7 L272.5,362.6 L269.2,358.2 L271.3,354.5 L275.7,353.8 L269.2,350.8 L270.3,347.1 L273.9,343.6 L276.9,348.1 L278.7,340.6 L280.2,342.2 L284.5,338.5 L289.5,337.8 Z", lx: 279.1, ly: 353.1 },
-  { name: "인천", d: "M157.4,208.3 L166.4,212.8 L163,218.6 L165.5,223 L161.7,228.7 L152.6,232.3 L157.3,230.8 L153.7,226 L156.1,224.8 L153.2,222.3 L155.4,222.6 L153.5,221.4 L156.4,218.9 L154.1,219.6 L152.2,212.2 L157.4,208.3 Z", lx: 136, ly: 220 },
+  { name: "인천", d: "M157.4,208.3 L166.4,212.8 L163,218.6 L165.5,223 L161.7,228.7 L152.6,232.3 L157.3,230.8 L153.7,226 L156.1,224.8 L153.2,222.3 L155.4,222.6 L153.5,221.4 L156.4,218.9 L154.1,219.6 L152.2,212.2 L157.4,208.3 Z", lx: 150, ly: 218 },
   { name: "광주", d: "M164.4,398.4 L163.8,400.1 L167.1,401.5 L175.3,398.9 L177.6,404.5 L181.1,405.1 L179,411.3 L165,414.7 L162.4,409.9 L157.5,409.9 L157.3,403.5 L164.4,398.4 Z", lx: 152, ly: 408 },
   { name: "대전", d: "M205.5,300 L205.7,302.6 L208.6,303.2 L211,301 L212.1,306.3 L215.9,307.3 L213.7,308.1 L209.2,323 L206.1,322.1 L203.8,317.3 L201.2,324.4 L195.7,315.8 L198,305.9 L201.6,304.9 L203,300 L205.5,300 Z", lx: 220, ly: 314 },
   { name: "울산", d: "M319.5,361.8 L325.8,363 L325.7,366.2 L328.2,367.5 L331.9,364.7 L338.3,366.9 L337.9,379.7 L335.4,381.2 L333.5,376 L334.5,380.7 L333,382.6 L330.6,380.1 L333.3,384.5 L332.5,390.5 L329.1,392.7 L326.3,388 L322.2,388 L321.9,383.9 L319.4,384.1 L312.8,376.4 L308.9,376.8 L307.3,374.2 L310.4,372.3 L309.5,369.1 L314.4,367.6 L314.1,363.6 L319.5,361.8 Z", lx: 342, ly: 378 },
-  { name: "세종", d: "M190.8,280.7 L199.6,284.6 L197.5,288 L199.1,292.3 L205.9,296.1 L206.3,299.4 L203,300 L200.8,305.4 L195.9,306.6 L192.6,304 L190.7,298.2 L193.2,292.9 L189.8,290.7 L190.2,283.9 L188,282.5 L190.8,280.7 Z", lx: 180, ly: 288 },
+  { name: "세종", d: "M190.8,280.7 L199.6,284.6 L197.5,288 L199.1,292.3 L205.9,296.1 L206.3,299.4 L203,300 L200.8,305.4 L195.9,306.6 L192.6,304 L190.7,298.2 L193.2,292.9 L189.8,290.7 L190.2,283.9 L188,282.5 L190.8,280.7 Z", lx: 182, ly: 293 },
 ];
 
+/* ── Color: critical/warning = vivid, watch/safe = muted ── */
+
 function getMapFill(score: number): string {
-  if (score >= 75) return "rgba(239,68,68,0.55)";
-  if (score >= 60) return "rgba(245,158,11,0.5)";
-  if (score >= 45) return "rgba(56,189,248,0.4)";
-  return "rgba(34,197,94,0.4)";
+  if (score >= 75) return "rgba(239,68,68,0.5)";
+  if (score >= 60) return "rgba(245,158,11,0.4)";
+  if (score >= 45) return "rgba(100,116,139,0.25)";
+  return "rgba(100,116,139,0.18)";
 }
 
 function getMapFillHex(score: number): string {
-  if (score >= 75) return "#dc2626";
-  if (score >= 60) return "#d97706";
-  if (score >= 45) return "#0ea5e9";
-  return "#16a34a";
+  if (score >= 75) return "#ef4444";
+  if (score >= 60) return "#f59e0b";
+  if (score >= 45) return "#64748b";
+  return "#64748b";
 }
 
 function getMapStroke(score: number): string {
-  if (score >= 75) return "rgba(239,68,68,0.7)";
-  if (score >= 60) return "rgba(245,158,11,0.6)";
-  if (score >= 45) return "rgba(56,189,248,0.5)";
-  return "rgba(34,197,94,0.5)";
+  if (score >= 75) return "rgba(239,68,68,0.6)";
+  if (score >= 60) return "rgba(245,158,11,0.5)";
+  return "rgba(100,116,139,0.3)";
+}
+
+function isCritical(score: number): boolean {
+  return score >= 60;
 }
 
 interface Props {
@@ -88,14 +93,14 @@ export default function RegionMap({ allRegions, filtered }: Props) {
     const dimmed = isFiltered && !filteredSet.has(name);
     const isSelected = selected === name;
     return {
-      fill: region ? getMapFill(region.score) : "#253a54",
+      fill: region ? getMapFill(region.score) : "#E5E7EB",
       stroke: isSelected
         ? "rgba(165,210,255,0.8)"
         : region
           ? getMapStroke(region.score)
-          : "#2f4a6a",
-      strokeWidth: isSelected ? "2.5" : undefined,
-      opacity: dimmed ? 0.2 : 1,
+          : "#D1D5DB",
+      strokeWidth: isSelected ? "2.5" : "1",
+      opacity: dimmed ? 0.15 : 1,
       filter: isSelected ? "url(#glow)" : undefined,
       className: "map-region",
       onMouseEnter: () => region && setHovered(region),
@@ -105,10 +110,10 @@ export default function RegionMap({ allRegions, filtered }: Props) {
   };
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+    <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
       <div
         ref={ref}
-        className="panel relative animate-fade-in p-3"
+        className="relative animate-fade-in rounded-2xl border border-border bg-surface p-4"
         onMouseMove={handleMove}
       >
         <svg viewBox="100 120 280 470" className="mx-auto h-auto w-full max-h-[540px]">
@@ -122,12 +127,14 @@ export default function RegionMap({ allRegions, filtered }: Props) {
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+            <filter id="textShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#FFFFFF" floodOpacity="0.9" />
+            </filter>
           </defs>
           {PROVINCES.map((p) => (
             <path
               key={p.name}
               d={p.d}
-              strokeWidth="1.5"
               strokeLinejoin="round"
               {...regionStyle(p.name)}
             />
@@ -136,36 +143,54 @@ export default function RegionMap({ allRegions, filtered }: Props) {
             <path
               key={c.name}
               d={c.d}
-              strokeWidth="1"
               strokeLinejoin="round"
               {...regionStyle(c.name)}
             />
           ))}
-          {/* Ulleungdo & Dokdo (경북 연동) */}
-          <rect x="358" y="248" width="10" height="9" rx="2" strokeWidth="1.5" strokeLinejoin="round" {...regionStyle("경북")} />
-          <rect x="376" y="253" width="5" height="4" rx="1" strokeWidth="1" strokeLinejoin="round" {...regionStyle("경북")} />
-          <text x="363" y="241" textAnchor="middle" dominantBaseline="central" fill="#d4dde8" fontSize="7" fontWeight="600" stroke="#0f1d2e" strokeWidth="2" paintOrder="stroke" className="pointer-events-none select-none">울릉도</text>
-          <text x="378.5" y="248" textAnchor="middle" dominantBaseline="central" fill="#d4dde8" fontSize="6" fontWeight="600" stroke="#0f1d2e" strokeWidth="2" paintOrder="stroke" className="pointer-events-none select-none">독도</text>
+          {/* Ulleungdo & Dokdo */}
+          <rect x="358" y="248" width="10" height="9" rx="2" strokeLinejoin="round" {...regionStyle("경북")} />
+          <rect x="376" y="253" width="5" height="4" rx="1" strokeLinejoin="round" {...regionStyle("경북")} />
+          <text x="363" y="241" textAnchor="middle" dominantBaseline="central" fill="#6B7280" fontSize="7" fontWeight="600" stroke="#FFFFFF" strokeWidth="2" paintOrder="stroke" className="pointer-events-none select-none">울릉도</text>
+          <text x="378.5" y="248" textAnchor="middle" dominantBaseline="central" fill="#6B7280" fontSize="6" fontWeight="600" stroke="#FFFFFF" strokeWidth="2" paintOrder="stroke" className="pointer-events-none select-none">독도</text>
           {[...PROVINCES, ...CITIES].map((item) => {
             const dimmed = isFiltered && !filteredSet.has(item.name);
             if (dimmed) return null;
+            const region = lookup.get(item.name);
+            const score = region?.score;
+            const hot = score !== undefined && isCritical(score);
             return (
-              <text
-                key={`lbl-${item.name}`}
-                x={item.lx}
-                y={item.ly}
-                textAnchor="middle"
-                dominantBaseline="central"
-                fill="#d4dde8"
-                fontSize="10"
-                fontWeight="600"
-                stroke="#0f1d2e"
-                strokeWidth="2.5"
-                paintOrder="stroke"
-                className="pointer-events-none select-none"
-              >
-                {item.name}
-              </text>
+              <g key={`lbl-${item.name}`} filter="url(#textShadow)" className="pointer-events-none select-none">
+                <text
+                  x={item.lx}
+                  y={item.ly}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={hot ? "#1F2937" : "#6B7280"}
+                  fontSize={hot ? "10" : "9"}
+                  fontWeight={hot ? "700" : "500"}
+                  stroke="#FFFFFF"
+                  strokeWidth="3"
+                  paintOrder="stroke"
+                >
+                  {item.name}
+                </text>
+                {score !== undefined && (
+                  <text
+                    x={item.lx}
+                    y={item.ly + 11}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill={hot ? getMapFillHex(score) : "#475569"}
+                    fontSize={hot ? "9" : "8"}
+                    fontWeight="700"
+                    stroke="#FFFFFF"
+                    strokeWidth="2.5"
+                    paintOrder="stroke"
+                  >
+                    {score}
+                  </text>
+                )}
+              </g>
             );
           })}
         </svg>
@@ -175,21 +200,21 @@ export default function RegionMap({ allRegions, filtered }: Props) {
             <div className="flex items-center gap-2">
               <span
                 className="inline-block h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: getMapFillHex(hovered.score) }}
+                style={{ backgroundColor: isCritical(hovered.score) ? getMapFillHex(hovered.score) : "#64748b" }}
               />
               <span className="font-semibold text-foreground">
                 {hovered.name}
               </span>
-              <span className="font-bold" style={{ color: getMapFillHex(hovered.score) }}>
+              <span className="font-bold" style={{ color: isCritical(hovered.score) ? getMapFillHex(hovered.score) : "#94a3b8" }}>
                 {hovered.score}점
               </span>
             </div>
             <p className="mt-1 text-xs text-text-muted">{hovered.topIssue}</p>
             <div className="mt-1 flex items-center gap-1 text-xs text-text-muted">
               {hovered.trend === "up" ? (
-                <TrendingUp size={11} className="text-red-400" />
+                <TrendingUp size={11} className="text-red-600" />
               ) : hovered.trend === "down" ? (
-                <TrendingDown size={11} className="text-emerald-400" />
+                <TrendingDown size={11} className="text-emerald-600" />
               ) : (
                 <Minus size={11} />
               )}
@@ -199,14 +224,16 @@ export default function RegionMap({ allRegions, filtered }: Props) {
         )}
       </div>
 
-      <div ref={listRef} className="space-y-2 lg:max-h-[580px] lg:overflow-y-auto lg:pr-1">
+      {/* ── Region List: no bg, more padding ── */}
+      <div ref={listRef} className="space-y-1 lg:max-h-[580px] lg:overflow-y-auto lg:pr-1">
         {sorted.length === 0 ? (
-          <div className="panel py-12 text-center text-sm text-text-muted">
+          <div className="py-16 text-center text-sm text-text-muted">
             해당 등급의 지역이 없습니다.
           </div>
         ) : (
           sorted.map((region) => {
-            const color = getMapFillHex(region.score);
+            const hot = isCritical(region.score);
+            const color = hot ? getMapFillHex(region.score) : "#64748b";
             const level = getScoreLevel(region.score);
             const TrendIcon =
               region.trend === "up"
@@ -219,60 +246,67 @@ export default function RegionMap({ allRegions, filtered }: Props) {
               <div
                 key={region.name}
                 data-region={region.name}
-                className={`panel px-4 py-3 transition cursor-pointer ${
+                className={`rounded-xl px-5 py-4 transition cursor-pointer ${
                   selected === region.name
-                    ? "ring-1 ring-accent-blue/50"
-                    : ""
+                    ? "bg-surface-bright/50 ring-1 ring-accent-blue/30"
+                    : "hover:bg-surface-bright/30"
                 }`}
                 onClick={() => selectRegion(region.name)}
                 onMouseEnter={() => setHovered(region)}
                 onMouseLeave={() => setHovered(null)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-3">
                     <span
-                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      className="inline-block h-2 w-2 rounded-full"
                       style={{ backgroundColor: color }}
                     />
-                    <h3 className="text-sm font-semibold text-foreground">
+                    <h3 className={`text-sm font-semibold ${hot ? "text-foreground" : "text-text-secondary"}`}>
                       {region.name}
                     </h3>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <TrendIcon
-                      size={14}
+                      size={13}
                       className={
-                        region.trend === "up"
-                          ? "text-red-400"
+                        region.trend === "up" && hot
+                          ? "text-red-600"
                           : region.trend === "down"
-                            ? "text-emerald-400"
-                            : "text-text-muted"
+                            ? "text-emerald-400/60"
+                            : "text-text-muted/40"
                       }
                     />
-                    <span className="text-xl font-bold" style={{ color }}>
+                    <span
+                      className="text-lg font-bold"
+                      style={{ color: hot ? color : "#94a3b8" }}
+                    >
                       {region.score}
                     </span>
                   </div>
                 </div>
-                <div className="mt-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-bright">
+                <div className="mt-2.5">
+                  <div className="h-1 w-full overflow-hidden rounded-full bg-surface-bright/50">
                     <div
                       className="h-full rounded-full gauge-animate"
                       style={{
                         width: `${region.score}%`,
-                        backgroundColor: color,
+                        backgroundColor: hot ? color : "#475569",
                       }}
                     />
                   </div>
                 </div>
-                <div className="mt-2 flex items-center justify-between">
-                  <span className="text-xs text-text-muted">{region.topIssue}</span>
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                    style={{ backgroundColor: color + "18", color }}
-                  >
-                    {getRiskLabel(level)}
+                <div className="mt-2.5 flex items-center justify-between">
+                  <span className={`text-xs ${hot ? "text-text-muted" : "text-text-muted/60"}`}>
+                    {region.topIssue}
                   </span>
+                  {hot && (
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                      style={{ backgroundColor: color + "18", color }}
+                    >
+                      {getRiskLabel(level)}
+                    </span>
+                  )}
                 </div>
               </div>
             );

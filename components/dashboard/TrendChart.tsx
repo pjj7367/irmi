@@ -29,23 +29,26 @@ export default function TrendChart() {
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={mockTrendData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#253a54" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 11, fill: "#7a8da6" }}
-              axisLine={{ stroke: "#253a54" }}
+              tick={{ fontSize: 11, fill: "#9CA3AF" }}
+              axisLine={{ stroke: "#E5E7EB" }}
             />
             <YAxis
               domain={[40, 90]}
-              tick={{ fontSize: 11, fill: "#7a8da6" }}
-              axisLine={{ stroke: "#253a54" }}
+              tick={{ fontSize: 11, fill: "#9CA3AF" }}
+              axisLine={{ stroke: "#E5E7EB" }}
             />
             <Tooltip
               contentStyle={{
                 borderRadius: "12px",
-                border: "1px solid #253a54",
+                border: "1px solid #E5E7EB",
                 fontSize: "12px",
+                backgroundColor: "#FFFFFF",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
               }}
+              labelStyle={{ color: "#111827" }}
             />
             <Legend
               iconType="circle"

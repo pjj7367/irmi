@@ -3,13 +3,13 @@ import { RiskLevel } from "./types";
 export function getRiskColor(level: RiskLevel): string {
   switch (level) {
     case "critical":
-      return "text-red-400";
+      return "text-red-600";
     case "warning":
-      return "text-orange-400";
+      return "text-orange-600";
     case "watch":
-      return "text-sky-400";
+      return "text-sky-600";
     case "safe":
-      return "text-green-400";
+      return "text-green-600";
   }
 }
 
@@ -29,13 +29,13 @@ export function getRiskBg(level: RiskLevel): string {
 export function getRiskBadge(level: RiskLevel): string {
   switch (level) {
     case "critical":
-      return "bg-risk-critical-bg text-red-400";
+      return "bg-risk-critical-bg text-red-600";
     case "warning":
-      return "bg-risk-warning-bg text-orange-400";
+      return "bg-risk-warning-bg text-orange-600";
     case "watch":
-      return "bg-risk-watch-bg text-sky-400";
+      return "bg-risk-watch-bg text-sky-600";
     case "safe":
-      return "bg-risk-safe-bg text-green-400";
+      return "bg-risk-safe-bg text-green-600";
   }
 }
 
@@ -61,9 +61,9 @@ export function getScoreLevel(score: number): RiskLevel {
 
 export function getScoreGaugeColor(score: number): string {
   if (score >= 75) return "#dc2626";
-  if (score >= 60) return "#f97316";
-  if (score >= 45) return "#38bdf8";
-  return "#22c55e";
+  if (score >= 60) return "#ea580c";
+  if (score >= 45) return "#0284c7";
+  return "#16a34a";
 }
 
 export function formatDate(dateStr: string): string {

@@ -1,24 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { Search } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Search, Loader2 } from "lucide-react";
 import NewsCard from "@/components/analysis/NewsCard";
 import KeywordCloud from "@/components/analysis/KeywordCloud";
-import { mockNewsArticles } from "@/lib/mock-data";
-import { Category } from "@/lib/types";
+import { Category, NewsArticle } from "@/lib/types";
 
 const categories: (Category | "전체")[] = ["전체", "물가", "고용", "자영업", "금융", "부동산"];
 
 export default function AnalysisPage() {
   const [category, setCategory] = useState<Category | "전체">("전체");
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [articles, setArticles] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = mockNewsArticles.filter((a) => {
-    if (category !== "전체" && a.category !== category) return false;
-    if (query && !a.title.includes(query) && !a.summary.includes(query))
-      return false;
-    return true;
-  });
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const fetchArticles = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (category !== "전체") params.set("category", category);
+      if (debouncedQuery) params.set("q", debouncedQuery);
+      params.set("limit", "20");
+
+      const res = await fetch(`/api/articles?${params}`);
+      const data = await res.json();
+      setArticles(data);
+    } catch {
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [category, debouncedQuery]);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
 
   return (
     <div className="space-y-4">
@@ -29,7 +51,7 @@ export default function AnalysisPage() {
         </p>
       </div>
 
-      <KeywordCloud />
+      <KeywordCloud articles={articles} />
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex flex-wrap gap-1.5">
@@ -37,10 +59,10 @@ export default function AnalysisPage() {
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
                 category === cat
-                  ? "bg-accent-blue text-white"
-                  : "bg-surface-bright text-text-secondary hover:bg-surface-hover"
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 hover:text-gray-700"
               }`}
             >
               {cat}
@@ -57,18 +79,23 @@ export default function AnalysisPage() {
             placeholder="기사 검색..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-3 text-sm text-foreground outline-none transition focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+            className="w-full rounded-full border border-gray-200 bg-white py-2 pl-9 pr-4 text-sm text-foreground outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-200"
           />
         </div>
       </div>
 
       <div className="space-y-3">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="rounded-2xl border border-border bg-surface py-12 text-center">
+            <Loader2 size={24} className="mx-auto animate-spin text-text-muted" />
+            <p className="mt-2 text-sm text-text-muted">기사를 불러오는 중...</p>
+          </div>
+        ) : articles.length === 0 ? (
           <div className="rounded-2xl border border-border bg-surface py-12 text-center text-sm text-text-muted">
             검색 결과가 없습니다.
           </div>
         ) : (
-          filtered.map((article) => (
+          articles.map((article) => (
             <NewsCard key={article.id} article={article} />
           ))
         )}
