@@ -51,3 +51,6 @@ reporters-compact.png
 reporters-full-page.png
 reporters-hero-check.png
 reporters-refined.png
+
+# database
+*.db

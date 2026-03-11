@@ -20,7 +20,10 @@
       "Bash(npm install:*)",
       "Bash(npx tsx:*)",
       "mcp__playwright__browser_wait_for",
-      "mcp__playwright__browser_snapshot"
+      "mcp__playwright__browser_snapshot",
+      "Bash(git push:*)",
+      "Bash(git filter-branch:*)",
+      "Bash(git stash:*)"
     ]
   },
   "enabledMcpjsonServers": [
